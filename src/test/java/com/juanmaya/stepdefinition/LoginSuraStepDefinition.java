@@ -12,12 +12,17 @@ import net.serenitybdd.screenplay.actions.*;
 import net.serenitybdd.screenplay.actors.OnStage;
 import net.serenitybdd.screenplay.actors.OnlineCast;
 import net.serenitybdd.screenplay.ensure.Ensure;
+import net.serenitybdd.screenplay.ensure.web.ElementLocated;
 import net.serenitybdd.screenplay.ui.*;
+import net.serenitybdd.screenplay.waits.WaitUntil;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isClickable;
+import static net.serenitybdd.screenplay.matchers.WebElementStateMatchers.isVisible;
 
 public class LoginSuraStepDefinition {
 
@@ -70,8 +75,15 @@ public class LoginSuraStepDefinition {
     }
     @Entonces("{actor} observa el dashboard de afiliados de Sura")
     public void observaElDashboardDeAfiliadosDeSura(Actor actor) {
-        actor.should(
-
+        actor.attemptsTo(
+                WaitUntil.the(PageElement.withCSSClass("titulo-nombre"), isVisible()).forNoMoreThan(Duration.ofSeconds(30)),
+                Ensure.that(ElementLocated.by(PageElement.withCSSClass("titulo-nombre"))).text().endsWith("Hola, JUAN")
+        );
+        actor.attemptsTo(
+                WaitUntil.the(PageElement.withNameOrId("dropdownPerfilUsuario"), isClickable()).forNoMoreThan(Duration.ofSeconds(30)),
+                Switch.toActiveElement(),
+                JavaScriptClick.on(PageElement.withNameOrId("dropdownPerfilUsuario")),
+                Click.on(PageElement.withCSSClass("fa fa-sign-out").inside(PageElement.withCSSClass("dropdown-item")))
         );
     }
 }
